@@ -6,11 +6,10 @@
  * Time: 10:32 下午.
  */
 
-namespace HughCube\Laravel\Package;
+namespace HughCube\Laravel\Auth;
 
-use Illuminate\Foundation\Application as LaravelApplication;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
-use Laravel\Lumen\Application as LumenApplication;
 
 class ServiceProvider extends IlluminateServiceProvider
 {
@@ -19,13 +18,6 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function boot()
     {
-        $source = realpath(dirname(__DIR__).'/config/config.php');
-
-        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
-            $this->publishes([$source => config_path(sprintf("%s.php", Package::getFacadeAccessor()))]);
-        } elseif ($this->app instanceof LumenApplication) {
-            $this->app->configure(Package::getFacadeAccessor());
-        }
     }
 
     /**
@@ -33,8 +25,17 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Package::getFacadeAccessor(), function ($app) {
-            return new Manager();
+        $this->app->resolving('auth', function ($auth) {
+            /** @var AuthManager $auth */
+            $auth->provider('cache', function ($app, $config) {
+                return new CacheProvider(
+                    ($config['hash'] ?? $app['hash']),
+                    ($config['cache'] ?? $app->config->get('cache.default')),
+                    ($config['expiresInSeconds'] ?? (7 * 24 * 3600)),
+                    ($config['cacheKeyPrefix'] ?? 'auth'),
+                    ($config['cacheTags'] ?? [])
+                );
+            });
         });
     }
 }

@@ -10,29 +10,26 @@
     ],
     "require": {
         "php": "7.*|8.*",
-        "illuminate/support": ">=8.0"
+        "illuminate/cache": "5.*|6.*|7.*|8.*",
+        "illuminate/support": "5.*|6.*|7.*|8.*",
+        "illuminate/auth": "5.*|6.*|7.*|8.*"
     },
     "require-dev": {
-        "laravel/framework": "*",
-        "laravel/lumen-framework": "*",
-        "squizlabs/php_codesniffer": "*",
-        "phpstan/phpstan": "*",
-        "orchestra/testbench": "*"
     },
     "autoload": {
         "psr-4": {
-            "HughCube\\Laravel\\Package\\": "src"
+            "HughCube\\Laravel\\Auth\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HughCube\\Laravel\\Package\\Tests\\": "tests"
+            "HughCube\\Laravel\\Auth\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "HughCube\\Laravel\\Package\\ServiceProvider"
+                "HughCube\\Laravel\\Auth\\ServiceProvider"
             ]
         }
     },
